@@ -27,7 +27,7 @@ def generate_texts(text: str):
         }
         for data in datas:
             retval["raw"].append(data)
-            m = re.search("\\<REQUEST\\>(.*)\\<REPLY\\>(.*?)\\<(REQUEST|REPLY|END)\\>",
+            m = re.search("\\<REQUEST\\>(.*?)\\<REPLY\\>(.*?)\\<END\\>",
                           "%s<END>" % data, re.MULTILINE | re.DOTALL)
             actual_text = m.group(2).strip()
             retval["text"].append(actual_text)
