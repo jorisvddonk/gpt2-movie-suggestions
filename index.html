@@ -1,0 +1,69 @@
+<html>
+
+<head>
+  <title>GPT-2 movie suggestions!</title>
+  <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Roboto:300,300italic,700,700italic">
+  <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/normalize/5.0.0/normalize.css">
+  <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/milligram/1.3.0/milligram.css">
+  <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+
+      var app = new Vue({
+        el: '#app',
+        data: {
+          input: 'I am stuck at home due to the coronavirus outbreak. What are some good movies that will make me feel better?',
+          loading: false,
+          output: ""
+        },
+        methods: {
+          submit: function () {
+            this.loading = true;
+            fetch("/generate", { method: 'post', body: JSON.stringify({ text: this.input }), headers: { 'Content-Type': 'application/json' } })
+              .then(res => res.json())
+              .then(data => {
+                this.output = data.data;
+                this.loading = false;
+              }).catch(err => {
+                this.loading = false;
+              })
+          }
+        }
+      });
+
+    });
+  </script>
+  <style>
+    #app {
+      padding-top: 5em;
+    }
+  </style>
+</head>
+
+<body>
+  <div id="app">
+    <div class="container">
+
+      <div class="row">
+        <div class="column">
+          <form v-on:submit.prevent="submit">
+            <fieldset>
+              <input type="text" v-model="input" :disabled="loading">
+              <input class="button-primary" type="submit" value="Give me recommendations!" :disabled="loading">
+            </fieldset>
+          </form>
+          <div v-if="loading">loading...</div>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="column">
+          <p>{{ output }}</p>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</body>
+
+</html>
