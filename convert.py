@@ -1,8 +1,8 @@
 import os
-import json
 from markdown import Markdown
 from io import StringIO
 from tqdm import tqdm
+import orjson
 
 
 def unmark_element(element, stream=None):
@@ -33,7 +33,7 @@ num = 0
 for f in os.listdir("./data"):
     fil = open(os.path.join("./data", f), 'r', encoding="utf8")
     for line in tqdm(fil):
-        data = json.loads(line)
+        data = orjson.loads(line)
         entry = "<REQUEST>\n%s\n%s\n\n<REPLY>\n%s\n\n<END>\n\n" % (
             data['title'], unmark(data['selftext']), unmark(data['body']))
         out.write(entry)
