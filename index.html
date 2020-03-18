@@ -27,13 +27,14 @@
         el: '#app',
         data: {
           input: suggestions[Math.floor(Math.random() * suggestions.length)],
+          samples: 1,
           loading: false,
           output: []
         },
         methods: {
           submit: function () {
             this.loading = true;
-            fetch("/generate", { method: 'post', body: JSON.stringify({ text: this.input }), headers: { 'Content-Type': 'application/json' } })
+            fetch("/generate", { method: 'post', body: JSON.stringify({ text: this.input, samples: this.samples }), headers: { 'Content-Type': 'application/json' } })
               .then(res => res.json())
               .then(data => {
                 this.output = data.data.map(d => d.trim());
@@ -77,7 +78,10 @@
         <div class="column">
           <form v-on:submit.prevent="submit">
             <fieldset>
-              <textarea type="text" v-model="input" :disabled="loading"></textarea>
+              <label for="query">Query</label>
+              <textarea type="text" v-model="input" :disabled="loading" id="query"></textarea>
+              <label for="samples">Number of samples</label>
+              <input v-model.number="samples" type="number" id="samples" min="1" max="5">
               <input class="button-primary" type="submit" value="Give me recommendations!" :disabled="loading">
             </fieldset>
           </form>

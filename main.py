@@ -9,15 +9,17 @@ sess = gpt2.start_tf_sess()
 gpt2.load_gpt2(sess, run_name='run1')
 
 
-def generate_texts(text: str):
+def generate_texts(text: str, samples: int = 1):
+    if samples > 5:
+        raise Exception("Samples can not be greater than 5!")
     actual_text = "<REQUEST>\n%s\n\n<REPLY>\n" % text
     with sess.graph.as_default():
         datas = gpt2.generate(sess,
                               length=250,
                               temperature=0.7,
                               prefix=actual_text,
-                              nsamples=5,
-                              batch_size=5,
+                              nsamples=samples,
+                              batch_size=samples,
                               run_name='run1',
                               return_as_list=True
                               )
@@ -36,6 +38,7 @@ def generate_texts(text: str):
 
 class Input(BaseModel):
     text: str
+    samples: int
 
 
 app = FastAPI()
@@ -49,5 +52,5 @@ def root():
 
 @app.post("/generate")
 def generate(data: Input):
-    data = generate_texts(data.text)
+    data = generate_texts(data.text, data.samples)
     return {"data": data['text'], "raw": data['raw']}
