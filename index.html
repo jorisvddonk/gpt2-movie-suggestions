@@ -26,7 +26,7 @@
         data: {
           input: suggestions[Math.floor(Math.random() * suggestions.length)],
           loading: false,
-          output: ""
+          output: []
         },
         methods: {
           submit: function () {
@@ -34,7 +34,7 @@
             fetch("/generate", { method: 'post', body: JSON.stringify({ text: this.input }), headers: { 'Content-Type': 'application/json' } })
               .then(res => res.json())
               .then(data => {
-                this.output = data.data.trim();
+                this.output = data.data.map(d => d.trim());
                 this.loading = false;
               }).catch(err => {
                 this.loading = false;
@@ -73,7 +73,7 @@
         <div class="column">
           <form v-on:submit.prevent="submit">
             <fieldset>
-              <input type="text" v-model="input" :disabled="loading">
+              <textarea type="text" v-model="input" :disabled="loading"></textarea>
               <input class="button-primary" type="submit" value="Give me recommendations!" :disabled="loading">
             </fieldset>
           </form>
@@ -83,7 +83,7 @@
 
       <div class="row">
         <div class="column">
-          <p class="output">{{ output }}</p>
+          <p v-for="(item, index) in output" class="output">{{ item }}</p>
         </div>
       </div>
 

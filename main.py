@@ -9,22 +9,29 @@ sess = gpt2.start_tf_sess()
 gpt2.load_gpt2(sess, run_name='run1')
 
 
-def generate_text(text: str):
+def generate_texts(text: str):
     actual_text = "<REQUEST>\n%s\n\n<REPLY>\n" % text
     with sess.graph.as_default():
-        data = gpt2.generate(sess,
-                             length=250,
-                             temperature=0.7,
-                             prefix=actual_text,
-                             nsamples=1,
-                             batch_size=1,
-                             run_name='run1',
-                             return_as_list=True
-                             )[0]
-        m = re.search("\\<REQUEST\\>(.*)\\<REPLY\\>(.*?)\\<(REQUEST|REPLY|END)\\>",
-                      "%s<END>" % data, re.MULTILINE | re.DOTALL)
-        actual_text = m.group(2)
-        return actual_text
+        datas = gpt2.generate(sess,
+                              length=250,
+                              temperature=0.7,
+                              prefix=actual_text,
+                              nsamples=5,
+                              batch_size=5,
+                              run_name='run1',
+                              return_as_list=True
+                              )
+        retval = {
+            "raw": [],
+            "text": []
+        }
+        for data in datas:
+            retval["raw"].append(data)
+            m = re.search("\\<REQUEST\\>(.*)\\<REPLY\\>(.*?)\\<(REQUEST|REPLY|END)\\>",
+                          "%s<END>" % data, re.MULTILINE | re.DOTALL)
+            actual_text = m.group(2).strip()
+            retval["text"].append(actual_text)
+        return retval
 
 
 class Input(BaseModel):
@@ -42,4 +49,5 @@ def root():
 
 @app.post("/generate")
 def generate(data: Input):
-    return {"data": generate_text(data.text)}
+    data = generate_texts(data.text)
+    return {"data": data['text'], "raw": data['raw']}
