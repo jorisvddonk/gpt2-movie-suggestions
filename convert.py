@@ -2,7 +2,7 @@ import os
 from markdown import Markdown
 from io import StringIO
 from tqdm import tqdm
-import orjson
+import jsonlines
 
 
 def unmark_element(element, stream=None):
@@ -31,14 +31,12 @@ out = open('./data.txt', 'w', encoding="utf8")
 num = 0
 
 for f in os.listdir("./data"):
-    fil = open(os.path.join("./data", f), 'r', encoding="utf8")
-    for line in tqdm(fil):
-        data = orjson.loads(line)
+    with jsonlines.open(os.path.join("./data", f)) as reader:
+        for data in tqdm(reader.iter(type=dict, skip_invalid=True)):
         entry = "<REQUEST>\n%s\n%s\n\n<REPLY>\n%s\n\n<END>\n\n" % (
             data['title'], unmark(data['selftext']), unmark(data['body']))
         out.write(entry)
         num += 1
-    fil.close()
 
 print(num)
 out.close()
