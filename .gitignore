@@ -1,2 +1,6 @@
 node_modules/
-model.tar
+data/
+*.json
+*_data.txt
+data*.txt
+model/*.tar
