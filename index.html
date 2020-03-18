@@ -50,6 +50,15 @@
 
       <div class="row">
         <div class="column">
+          <h2>GPT-2 movie suggestions</h2>
+          <h3>Looking for a movie to watch, but need some specific recommendations? Ask GPT-2!</h3>
+          <h5>This GPT-2 model has been finetuned on more than 4 years' worth of data from the <a
+              href="https://www.reddit.com/r/MovieSuggestions/">MovieSuggestions</a> subreddit.</h5>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="column">
           <form v-on:submit.prevent="submit">
             <fieldset>
               <input type="text" v-model="input" :disabled="loading">
