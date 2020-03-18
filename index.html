@@ -22,7 +22,7 @@
             fetch("/generate", { method: 'post', body: JSON.stringify({ text: this.input }), headers: { 'Content-Type': 'application/json' } })
               .then(res => res.json())
               .then(data => {
-                this.output = data.data;
+                this.output = data.data.trim();
                 this.loading = false;
               }).catch(err => {
                 this.loading = false;
@@ -36,6 +36,10 @@
   <style>
     #app {
       padding-top: 5em;
+    }
+
+    .output {
+      white-space: pre-line;
     }
   </style>
 </head>
@@ -58,7 +62,7 @@
 
       <div class="row">
         <div class="column">
-          <p>{{ output }}</p>
+          <p class="output">{{ output }}</p>
         </div>
       </div>
 
