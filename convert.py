@@ -34,7 +34,7 @@ for f in os.listdir("./data"):
     fil = open(os.path.join("./data", f), 'r', encoding="utf8")
     for line in tqdm(fil):
         data = json.loads(line)
-        entry = "<REQUEST>\n%s\n%s\n\n<REPLY>\n%s\n\n\n" % (
+        entry = "<REQUEST>\n%s\n%s\n\n<REPLY>\n%s\n\n<END>\n\n" % (
             data['title'], unmark(data['selftext']), unmark(data['body']))
         out.write(entry)
         num += 1
